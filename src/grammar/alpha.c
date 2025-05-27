@@ -29,7 +29,40 @@ enum boolCode isAlphaValid(const GrammarNode* a) {
     return TRUE;
 }
 
-GrammarNode* insertIfUnique(GrammarNode** head, GrammarNode* new) {
-    return new;
+GrammarNode* insertIfUnique(GrammarNode** head, GrammarNode* newNode) {
+    if (*head == NULL) {
+        *head = newNode;
+        newNode->next = NULL;
+        return newNode;
+    }
+
+    GrammarNode* current = *head;
+    GrammarNode* prev = NULL;
+    while (current != NULL) {
+        if (compareAlpha(current, newNode, newNode->size) == TRUE) {
+            return current;
+        }
+        prev = current;
+        current = current->next;
+    }
+
+    prev->next = newNode;
+    newNode->next = NULL;
+    return newNode;
+}
+
+void printGrammarFor(u32 value, GrammarNode* head) {
+    fprintf(stdout, "Key: %u - ", value);
+    GrammarNode* current = head;
+    while (current->next != NULL) {
+        u16* cptr = (u16*)current->alpha;
+        fprintf(stdout, "Alpha%u: ", current->key);
+        for (u32 i = 0; i < current->size; i++) {
+            fprintf(stdout, "%u ", cptr[i]);
+        }
+        fprintf(stdout, " | ");
+        current = current->next;
+    }       
+    fprintf(stdout, "\n");
 }
 

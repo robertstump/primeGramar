@@ -8,7 +8,7 @@ DEBUG_FLAGS="-fsanitize=address -g -O0 -Wall -Werror"
 NO_OPT_FLAGS="-O0 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls"
 LIGHT_DBG_FLAGS="-g -O0 -Wall -Werror -fno-optimize-sibling-calls -fno-omit-frame-pointer"
 CFLAGS=$LIGHT_DBG_FLAGS
-INCLUDE_FLAGS="-Iinclude -Isrc -Isrc/tsp -Isrc/memory -Isrc/neon"
+INCLUDE_FLAGS="-Iinclude -Isrc -Isrc/tsp -Isrc/memory -Isrc/neon -Isrc/grammar"
 TEST_ONLY=false
 
 #for arg in "$@"; do
@@ -48,15 +48,14 @@ fi
 
 echo "[.] Compiling object files..."
 clang -std=c99 $CFLAGS -c src/memory/scratch_arena.c -o build/scratch_arena.o $INCLUDE_FLAGS 
-clang -std=c99 $CFLAGS -c src/tsp/dist_matrix.c -o build/dist_matrix.o $INCLUDE_FLAGS
 clang -std=c99 $CFLAGS -c src/memory/page_arena.c -o build/page_arena.o $INCLUDE_FLAGS
-clang -std=c99 $CFLAGS -c src/tsp/trie.c -o build/trie.o $INCLUDE_FLAGS
 clang -std=c99 $CFLAGS -c src/neon/neon_util.c -o build/neon_util.o $INCLUDE_FLAGS
+clang -std=c99 $CFLAGS -c src/grammar/alpha.c -o build/alpha.o $INCLUDE_FLAGS
 #add as needed here:
 
 #add "runner" here:
 TARGET="bin/permute"
-clang -std=c99 $CFLAGS src/tsp/path.c build/page_arena.o build/neon_util.o -o $TARGET $INCLUDE_FLAGS
+clang -std=c99 $CFLAGS src/main.c build/*.o -o $TARGET $INCLUDE_FLAGS
 
 if [ $? -ne 0 ]; then
     echo "[ ] Compilation/Linkage Failed."

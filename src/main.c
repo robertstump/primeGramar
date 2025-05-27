@@ -1,7 +1,7 @@
 #include <string.h>
 #include "common_types.h"
+#include "alpha.h"
 
-
-i32 main() {
-    return 0
+s32 main() {
+    return 0;
 }

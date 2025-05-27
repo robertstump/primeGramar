@@ -44,12 +44,14 @@ typedef struct {
 typedef struct GrammarNode{
     u32 key;
     void* alpha;
-    GrammarNode* next;
+    struct GrammarNode* next;
     u16 size;
 } GrammarNode;
 
-enum boolCode compareAlpha(const void* a, const void* b, u16 size);
-u8 isAlphaValid(const GrammarNode* a);
+enum boolCode compareAlpha(const GrammarNode* a, const GrammarNode* b, u16 size);
+enum boolCode isAlphaValid(const GrammarNode* a);
+void printGrammarFor(u32 value, GrammarNode* head);
+GrammarNode* insertIfUnique(GrammarNode** head, GrammarNode* newNode);
 
 /*
 typedef struct {
