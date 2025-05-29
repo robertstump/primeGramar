@@ -1,6 +1,8 @@
 #ifndef g_ALPHA_H
 #define g_ALPHA_H
 
+#include "arena_base.h"
+#include "page_arena.h"
 #include "common_types.h"
 
 #define require(expr, msg) do { if (!(expr)) { LOG_ERROR(msg); return INVALID; } } while(0)
@@ -11,47 +13,20 @@ enum boolCode {
     INVALID = 2 
 };
 
-#define alpha1 u16
-
-typedef struct {
-    u16 a;
-    u16 b;
-} alpha2;
-
-typedef struct {
-    u16 a;
-    u16 b;
-    u16 c;
-} alpha3;
-
-typedef struct { 
-    u16 a;
-    u16 b;
-    u16 c;
-    u16 d;
-    u16 e;
-} alpha4;
-
-typedef struct {
-    u16 a;
-    u16 b;
-    u16 c;
-    u16 d;
-    u16 e;
-    u16 f;
-} alpha5;
-
 typedef struct GrammarNode{
     u32 key;
-    void* alpha;
     struct GrammarNode* next;
+    u16* alpha;
     u16 size;
 } GrammarNode;
 
 enum boolCode compareAlpha(const GrammarNode* a, const GrammarNode* b, u16 size);
 enum boolCode isAlphaValid(const GrammarNode* a);
-void printGrammarFor(u32 value, GrammarNode* head);
-GrammarNode* insertIfUnique(GrammarNode** head, GrammarNode* newNode);
+GrammarNode* createGrammarNode(PageArena* nodeArena, PageArena* alphaArena, u32 key, u16* values, u16 size);
+GrammarNode* insertIfUnique(GrammarNode* head, GrammarNode* newNode);
+
+void printGrammarChain(u32 key, GrammarNode* head);
+
 
 /*
 typedef struct {

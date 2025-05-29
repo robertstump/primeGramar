@@ -37,4 +37,6 @@ PageArena *createPageArena(memMap* map, usize arenaSize);
 memptr arenaPageAlloc(PageArena* arena, usize alloc_size, usize alignment);
 void arenaPagePop(memMap* map);
 
+void printArenaStats(PageArena* arena, const char* label); 
+
 #endif

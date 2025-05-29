@@ -153,3 +153,21 @@ void arenaPagePop(memMap* map) {
         //exit(EXIT_FAILURE);
     }
 }
+
+void printArenaStats(PageArena* arena, const char* label) {
+    if(!arena || ! label) return;
+
+    usize used = arena->offset;
+    usize total = arena->size;
+    usize remains = total - used;
+
+    printf("=== Arena Stats: %s ===\n", label);
+    printf("  Base:     %p\n", (void*)arena->base);
+    printf("  Size:     %zu bytes\n", total);
+    printf("  Used:     %zu bytes\n", used);
+    printf("  Free:     %zu bytes\n", remains);
+    printf("  Offset:   %zu\n", arena->offset);
+    printf("  Parent:   %p\n", arena->parent);
+    printf("-----------------------------\n");
+}
+

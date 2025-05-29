@@ -1,2 +1,7 @@
 ./bin
 ./tests/test_lib/
+.DS*
+bin/*
+build/*
+*.log
+*.o

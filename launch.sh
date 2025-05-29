@@ -1,25 +1,34 @@
-#Consider flag for turning off testing, or turning off fresh compile to just launch etc.
-#
+set -euo pipefail
+IFS=$' \n\t'
+
 echo "##########################################################"
 echo "#             Begin TSP Solver Solution                  #"
 echo "##########################################################"
 
+if [[ "$PWD" != *"/GrammarOfPrime" ]]; then
+    echo "[!] Refusing to run outside of project root."
+    exit 1
+fi
+
 DEBUG_FLAGS="-fsanitize=address -g -O0 -Wall -Werror"
 NO_OPT_FLAGS="-O0 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls"
-LIGHT_DBG_FLAGS="-g -O0 -Wall -Werror -fno-optimize-sibling-calls -fno-omit-frame-pointer"
-CFLAGS=$LIGHT_DBG_FLAGS
+LIGHT_DBG_FLAGS="-g -O0 -Wall -Werror -fno-optimize-sibling-calls"
 INCLUDE_FLAGS="-Iinclude -Isrc -Isrc/tsp -Isrc/memory -Isrc/neon -Isrc/grammar"
+CFLAGS=$LIGHT_DBG_FLAGS 
 TEST_ONLY=false
-
-#for arg in "$@"; do
-    #if [ "$arg" = "-d" ] || [ "$arg" = "--debug" ]; then
-        #echo "[!] Debug mode enabled."
-        #CFLAGS=$DEBUG_FLAGS
-    #fi  
-#done
+CLEAN_ONLY=false
+NO_RUN=false
 
 for arg in "$@"; do 
     case "$arg" in 
+        -r|--no-run)
+            echo "[!] Compilation only - skipping run."
+            NO_RUN=true
+            ;;
+        -c|--clean)
+            echo "[!] Clean only."
+            CLEAN_ONLY=true
+            ;;
         -d|--debug)
             echo "[!] Debug mode enable."
             CFLAGS=$DEBUG_FLAGS
@@ -29,11 +38,11 @@ for arg in "$@"; do
             TEST_ONLY=true;;
         -n|--no-optimize)
             echo "[!] Running with no compiler optimization."
-            CFLAGS=$DEBUG_FLAGS
+            CFLAGS=$NO_OPT_FLAGS
             ;;
         *)
             echo "Syntax: launch.sh [flag][flag]"
-            echo "Flags --debug, -d, --test-only, -t, --no-optimize, -n (overwrites --debug)"
+            echo "Flags --no-run, -r, --clean, -c, --debug, -d, --test-only, -t, --no-optimize, -n (overwrites --debug)"
             ;;
     esac
 done
@@ -41,20 +50,36 @@ done
 mkdir -p build
 mkdir -p bin
 
-if test -d ./build; then
-    echo "clearing previous build....."
-    rm -rf /build/*.o
+if [[ "$PWD" != *"/GrammarOfPrime" ]]; then
+    echo "[!] Not in project root Aborting cleanup."
+    exit 1
+fi
+
+if [[ -d "./build" ]]; then
+    echo "[.] Clearing previous build....."
+    rm -rf "./build/"*.o
+fi
+
+if [[ -d "./bin" ]]; then
+    echo "[.] Clearing previous bin....."
+    rm -rf "./bin/"*
+fi
+
+if [ "$CLEAN_ONLY" = true ]; then
+    echo "[X] Bin/Build clean up complete"
+    exit 0
 fi
 
 echo "[.] Compiling object files..."
-clang -std=c99 $CFLAGS -c src/memory/scratch_arena.c -o build/scratch_arena.o $INCLUDE_FLAGS 
+echo "[DBG] Compiling with flags: " $CFLAGS
+
 clang -std=c99 $CFLAGS -c src/memory/page_arena.c -o build/page_arena.o $INCLUDE_FLAGS
 clang -std=c99 $CFLAGS -c src/neon/neon_util.c -o build/neon_util.o $INCLUDE_FLAGS
 clang -std=c99 $CFLAGS -c src/grammar/alpha.c -o build/alpha.o $INCLUDE_FLAGS
 #add as needed here:
 
 #add "runner" here:
-TARGET="bin/permute"
+TARGET="bin/alphaPrime"
 clang -std=c99 $CFLAGS src/main.c build/*.o -o $TARGET $INCLUDE_FLAGS
 
 if [ $? -ne 0 ]; then
@@ -107,4 +132,10 @@ echo "#                  Begin TSP Solver Solutions            #"
 echo "##########################################################"
 echo
 
+if [ "$NO_RUN" = true ]; then
+    echo "[X] Compilation complete - exiting....."
+    exit 0
+fi
+
 ./$TARGET
+
