@@ -2,7 +2,7 @@ set -euo pipefail
 IFS=$' \n\t'
 
 echo "##########################################################"
-echo "#             Begin TSP Solver Solution                  #"
+echo "#               Compile Grammar of Prime                 #"
 echo "##########################################################"
 
 if [[ "$PWD" != *"/GrammarOfPrime" ]]; then
@@ -65,6 +65,11 @@ if [[ -d "./bin" ]]; then
     rm -rf "./bin/"*
 fi
 
+if [[ -d "./tests/test_lib/" ]]; then
+    echo "[.] Clearing previous tests...."
+    rm -rf ".tests/test_lib/"*
+fi
+
 if [ "$CLEAN_ONLY" = true ]; then
     echo "[X] Bin/Build clean up complete"
     exit 0
@@ -75,7 +80,7 @@ echo "[DBG] Compiling with flags: " $CFLAGS
 
 clang -std=c99 $CFLAGS -c src/memory/page_arena.c -o build/page_arena.o $INCLUDE_FLAGS
 clang -std=c99 $CFLAGS -c src/neon/neon_util.c -o build/neon_util.o $INCLUDE_FLAGS
-clang -std=c99 $CFLAGS -c src/grammar/alpha.c -o build/alpha.o $INCLUDE_FLAGS
+clang -std=c99 $CFLAGS -c src/grammar/alpha2.c -o build/alpha2.o $INCLUDE_FLAGS
 #add as needed here:
 
 #add "runner" here:
@@ -128,7 +133,7 @@ fi
 echo "[X] All tests passed."
 echo
 echo "##########################################################"
-echo "#                  Begin TSP Solver Solutions            #"
+echo "#                  Begin Grammar of Prime                #"
 echo "##########################################################"
 echo
 
