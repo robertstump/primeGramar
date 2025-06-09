@@ -13,7 +13,7 @@ fi
 DEBUG_FLAGS="-fsanitize=address -g -O0 -Wall -Werror"
 NO_OPT_FLAGS="-O0 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls"
 LIGHT_DBG_FLAGS="-g -O0 -Wall -Werror -fno-optimize-sibling-calls"
-INCLUDE_FLAGS="-Iinclude -Isrc -Isrc/tsp -Isrc/memory -Isrc/neon -Isrc/grammar"
+INCLUDE_FLAGS="-Iinclude -Isrc -Isrc/tsp -Isrc/memory -Isrc/neon -Isrc/grammar -Isrc/triangle -Isrc/sieve"
 CFLAGS=$LIGHT_DBG_FLAGS 
 TEST_ONLY=false
 CLEAN_ONLY=false
@@ -80,11 +80,13 @@ echo "[DBG] Compiling with flags: " $CFLAGS
 
 clang -std=c99 $CFLAGS -c src/memory/page_arena.c -o build/page_arena.o $INCLUDE_FLAGS
 clang -std=c99 $CFLAGS -c src/neon/neon_util.c -o build/neon_util.o $INCLUDE_FLAGS
+clang -std=c99 $CFLAGS -c src/sieve/Gsub210.c -o build/Gsub210.o $INCLUDE_FLAGS
 clang -std=c99 $CFLAGS -c src/grammar/alpha2.c -o build/alpha2.o $INCLUDE_FLAGS
+clang -std=c99 $CFLAGS -c src/sieve/geometerPattern.c -o build/geometerPattern.o $INCLUDE_FLAGS
 #add as needed here:
 
 #add "runner" here:
-TARGET="bin/alphaPrime"
+TARGET="bin/gsub210"
 clang -std=c99 $CFLAGS src/main.c build/*.o -o $TARGET $INCLUDE_FLAGS
 
 if [ $? -ne 0 ]; then

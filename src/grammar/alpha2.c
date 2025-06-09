@@ -26,10 +26,17 @@ enum boolCode isAlphaValid(GrammarNode* a) {
 
 GrammarNode* createGrammarNode(PageArena* nodeArena, PageArena* alphaArena, u32 key, AtomicSymbol* values, u16 size) {
     GrammarNode* node = arenaPageAlloc(nodeArena, sizeof(GrammarNode), ALIGN_4);
-    if(!node) return NULL;
+    if(!node) {
+        LOG_ERROR("Failed to allocate GrammarNode");
+        return NULL;
+    }
+
 
     AtomicSymbol* data = arenaPageAlloc(alphaArena, sizeof(AtomicSymbol) * size, ALIGN_2);
-    if(!data) return NULL;
+    if(!data) {
+        LOG_ERROR("Failed to allocate Atomic Symbol data.");
+        return NULL;
+    }
 
     for (u16 i = 0; i < size; i++) {
         data[i] = values[i];
@@ -74,7 +81,7 @@ void printGrammarChain(u32 key, GrammarNode* head) {
     for (GrammarNode* node = head; node != NULL; node = node->next) {
         printf(" Alpha[%u]: ", node->size);
         for (u16 i = 0; i < node->size; i++) {
-            printf("%u ", node->alpha[i].symbol);
+            printf("%c ", node->alpha[i].symbol);
         }
         printf("\n");
         count++;

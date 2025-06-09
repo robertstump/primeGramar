@@ -46,8 +46,9 @@ typedef uint32x4_t n32x4;
 #define MiB(x) ((x) * 1024ULL * 1024ULL)
 #define GiB(x) ((x) * 1024ULL * 1024ULL * 1024ULL)
 
-#define MIN(a, b) (a < b) ? a : b;
-#define MAX(b, a) (a > b) ? a : b;
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX(b, a) ((a) > (b) ? (a) : (b))
+
 
 #define ARRAY_COUNT(arr) (sizeof(arr) / sizeof((arr)[0]))
 
